@@ -23,6 +23,9 @@ module.exports = {
           900: '#00442D',
         },
       },
+      gridTemplateColumns: {
+        custom: '1fr 280px',
+      },
     },
   },
   plugins: [],
