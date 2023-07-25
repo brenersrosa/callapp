@@ -21,7 +21,7 @@ export function MultiStep({ size, currentStep = 1 }: MultiStepProps) {
             <div
               key={step}
               className={clsx('h-1 rounded-full bg-zinc-600', {
-                'bg-gray-100': currentStep >= step,
+                'bg-gray-200': currentStep >= step,
               })}
             ></div>
           )

@@ -98,7 +98,7 @@ export default function Register() {
       <Box as="form" onSubmit={handleSubmit(handleRegister)}>
         <Input
           label="Nome de usuário"
-          prefix="ignite.com/"
+          prefix="callapp.com/"
           placeholder="seu-usuario"
           {...register('username')}
           message="Informe o seu nome de usuário."
