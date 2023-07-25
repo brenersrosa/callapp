@@ -1,11 +1,13 @@
-import clsx from 'clsx'
 import { useState } from 'react'
+import clsx from 'clsx'
 
 import { Calendar } from '@/components/global/Calendar'
 import { CalendarStepButton } from '@/components/schedule/CalendarStep/Button'
 
 export default function CalendarStep() {
-  const [isDateSelected, setIsDateSelected] = useState(true)
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+
+  const isDateSelected = !!selectedDate
 
   return (
     <div
@@ -17,7 +19,7 @@ export default function CalendarStep() {
         },
       )}
     >
-      <Calendar />
+      <Calendar selectedDate={selectedDate} onDateSelected={setSelectedDate} />
 
       {isDateSelected && (
         <div className="absolute bottom-0 right-0 top-0 flex w-72 flex-col gap-3 overflow-y-scroll p-6">

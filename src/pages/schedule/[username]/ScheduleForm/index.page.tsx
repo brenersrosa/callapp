@@ -4,7 +4,7 @@ import ConfirmStep from './ConfirmStep/index.page'
 export default function ScheduleForm() {
   return (
     <>
-      <ConfirmStep />
+      <CalendarStep />
     </>
   )
 }
