@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Calendar, Clock } from 'lucide-react'
+import dayjs from 'dayjs'
 
 import { Input } from '@/components/global/Input'
 import { Box } from '@/components/global/Box'
@@ -18,7 +19,15 @@ const confirmStepSchema = z.object({
 
 type ConfirmStepData = z.infer<typeof confirmStepSchema>
 
-export default function ConfirmStep() {
+interface ConfirmStepProps {
+  schedulingDate: Date
+  onCancelConfirmation: () => void
+}
+
+export default function ConfirmStep({
+  schedulingDate,
+  onCancelConfirmation,
+}: ConfirmStepProps) {
   const {
     register,
     handleSubmit,
@@ -31,21 +40,24 @@ export default function ConfirmStep() {
     console.log(data)
   }
 
+  const describedDate = dayjs(schedulingDate).format('DD[ de ]MMMM[ de ]YYYY')
+  const describedTime = dayjs(schedulingDate).format('HH:mm[h]')
+
   return (
     <Box
       as="form"
-      className="gap-6 divide-y divide-zinc-600"
+      className="mx-auto w-[540px] gap-6 divide-y divide-zinc-600"
       onSubmit={handleSubmit(handleConfirmScheduling)}
     >
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 text-white">
           <Calendar className="h-5 w-5 text-zinc-400" />
-          <span>22 de setembro de 2022</span>
+          <span>{describedDate}</span>
         </div>
 
         <div className="flex items-center gap-2 text-white">
           <Clock className="h-5 w-5 text-zinc-400" />
-          <span>18:00h</span>
+          <span>{describedTime}</span>
         </div>
       </div>
 
@@ -78,6 +90,7 @@ export default function ConfirmStep() {
           <Button
             title="Cancelar"
             type="button"
+            onClick={onCancelConfirmation}
             variant="cancel"
             className="col-start-3"
           />
