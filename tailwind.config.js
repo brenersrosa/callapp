@@ -24,7 +24,7 @@ module.exports = {
         },
       },
       gridTemplateColumns: {
-        custom: '1fr 280px',
+        custom: '1fr 320px',
       },
     },
   },
