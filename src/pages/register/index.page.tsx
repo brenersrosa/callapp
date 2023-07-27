@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
 import colors from 'tailwindcss/colors'
-import { Toaster, toast } from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
 import { MultiStep } from '@/components/register/MultiStep'
 import { Box } from '@/components/global/Box'
@@ -80,8 +80,6 @@ export default function Register() {
 
   return (
     <div className="mx-auto mb-4 mt-20 flex max-w-xl flex-col gap-6 px-4">
-      <Toaster />
-
       <div className="flex flex-col gap-2 px-6">
         <strong className="text-2xl font-bold leading-normal">
           Bem-vindo ao Ignite Call!

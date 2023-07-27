@@ -1,13 +1,18 @@
+import { useRouter } from 'next/router'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Calendar, Clock } from 'lucide-react'
+import { Calendar, CheckCircle, Clock } from 'lucide-react'
 import dayjs from 'dayjs'
+import colors from 'tailwindcss/colors'
+import { toast } from 'react-hot-toast'
 
 import { Input } from '@/components/global/Input'
 import { Box } from '@/components/global/Box'
 import { TextArea } from '@/components/global/TextArea'
 import { Button } from '@/components/global/Button'
+
+import { api } from '@/lib/axios'
 
 const confirmStepSchema = z.object({
   name: z
@@ -21,12 +26,12 @@ type ConfirmStepData = z.infer<typeof confirmStepSchema>
 
 interface ConfirmStepProps {
   schedulingDate: Date
-  onCancelConfirmation: () => void
+  onReturnToCalendar: () => void
 }
 
 export default function ConfirmStep({
   schedulingDate,
-  onCancelConfirmation,
+  onReturnToCalendar,
 }: ConfirmStepProps) {
   const {
     register,
@@ -36,8 +41,32 @@ export default function ConfirmStep({
     resolver: zodResolver(confirmStepSchema),
   })
 
+  const router = useRouter()
+  const username = String(router.query.username)
+
   async function handleConfirmScheduling(data: ConfirmStepData) {
-    console.log(data)
+    const { name, email, observations } = data
+
+    await api.post(`/users/${username}/schedule`, {
+      name,
+      email,
+      observations,
+      date: schedulingDate,
+    })
+
+    toast.error('Agendamento realizado com sucesso!', {
+      position: 'top-right',
+      style: {
+        backgroundColor: colors.green[500],
+        color: colors.white,
+        fontSize: 16,
+        fontWeight: 500,
+        padding: 16,
+      },
+      icon: <CheckCircle size={24} className="text-zinc-50" />,
+    })
+
+    onReturnToCalendar()
   }
 
   const describedDate = dayjs(schedulingDate).format('DD[ de ]MMMM[ de ]YYYY')
@@ -90,7 +119,7 @@ export default function ConfirmStep({
           <Button
             title="Cancelar"
             type="button"
-            onClick={onCancelConfirmation}
+            onClick={onReturnToCalendar}
             variant="cancel"
             className="col-start-3"
           />
