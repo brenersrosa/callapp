@@ -1,9 +1,10 @@
+import { useState, useCallback, useEffect } from 'react'
 import { GetServerSideProps } from 'next'
 import { getServerSession } from 'next-auth'
 import { useSession } from 'next-auth/react'
 import { ArrowRight } from 'lucide-react'
 import { z } from 'zod'
-import { useForm } from 'react-hook-form'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
@@ -14,18 +15,27 @@ import { Loading } from '@/components/global/Loading'
 import { Avatar } from '@/components/global/Avatar'
 import { TextArea } from '@/components/global/TextArea'
 import { Button } from '@/components/global/Button'
+import { Select } from '@/components/global/Select'
 
 import { api } from '@/lib/axios'
 
 import { buildNextAuthOptions } from '@/pages/api/auth/[...nextauth].api'
 
+interface CalendarItem {
+  id: string
+  summary: string
+}
+
 const updateProfileSchema = z.object({
+  // scheduleName: z.string(),
   bio: z.string(),
 })
 
 type UpdateProfileData = z.infer<typeof updateProfileSchema>
 
 export default function UpdateProfile() {
+  const [schedules, setSchedules] = useState<CalendarItem[]>([])
+
   const {
     register,
     handleSubmit,
@@ -37,7 +47,42 @@ export default function UpdateProfile() {
   const session = useSession()
   const router = useRouter()
 
-  console.log(session)
+  const username = session.data?.user.username
+
+  const fetchSchedules = useCallback(async () => {
+    try {
+      const response = await api.get(
+        `http://localhost:3000/api/users/${username}/list-calendars`,
+      )
+
+      if (!response) {
+        throw new Error('Failed to fetch calendars from Google.')
+      }
+
+      const { calendars } = await response.data
+
+      const uniqueSchedules = calendars.reduce(
+        (unique: CalendarItem[], current: CalendarItem) => {
+          const existingIndex = unique.findIndex(
+            (item) => item.summary === current.summary,
+          )
+          if (existingIndex === -1) {
+            unique.push(current)
+          }
+          return unique
+        },
+        [],
+      )
+
+      setSchedules(uniqueSchedules)
+    } catch (err) {
+      console.error(err)
+    }
+  }, [username])
+
+  useEffect(() => {
+    fetchSchedules()
+  }, [session, fetchSchedules])
 
   async function handleUpdateProfile(data: UpdateProfileData) {
     await api.put('/users/profile', {

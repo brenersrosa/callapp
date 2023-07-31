@@ -40,7 +40,7 @@ const TextAreaBase: ForwardRefRenderFunction<
 
       <div
         className={clsx(
-          'relative rounded-lg border border-transparent bg-zinc-900 px-2 py-3 focus-within:border-ignite-500',
+          'rounded-lg border border-transparent bg-zinc-900 px-2 py-3 focus-within:border-ignite-500',
           {
             'focus-within:border-red-500': error?.message,
           },

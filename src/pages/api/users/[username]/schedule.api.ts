@@ -74,10 +74,10 @@ export default async function handle(
   })
 
   await calendar.events.insert({
-    calendarId: 'primary',
+    calendarId: user.schedule_id || 'primary',
     conferenceDataVersion: 1,
     requestBody: {
-      summary: `appCall: ${name}`,
+      summary: `appCall | ${name}`.toUpperCase(),
       description: observations,
       start: {
         dateTime: schedulingDate.format(),
@@ -93,6 +93,19 @@ export default async function handle(
             type: 'hangoutsMeet',
           },
         },
+      },
+      reminders: {
+        useDefault: false,
+        overrides: [
+          {
+            method: 'popup',
+            minutes: 30,
+          },
+          {
+            method: 'email',
+            minutes: 1440, // 24 hours
+          },
+        ],
       },
     },
   })
