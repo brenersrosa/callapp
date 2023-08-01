@@ -8,6 +8,7 @@ import { Calendar } from '@/components/global/Calendar'
 import { CalendarStepButton } from '@/components/schedule/CalendarStep/Button'
 
 import { api } from '@/lib/axios'
+import { X } from 'lucide-react'
 
 interface Availability {
   possibleTimes: number[]
@@ -60,6 +61,10 @@ export default function CalendarStep({ onSelectDateTime }: CalendarStepProps) {
     onSelectDateTime(dateWithTime)
   }
 
+  function handleCloseModal() {
+    setSelectedDate(null)
+  }
+
   return (
     <div
       className={clsx(
@@ -73,23 +78,34 @@ export default function CalendarStep({ onSelectDateTime }: CalendarStepProps) {
       <Calendar selectedDate={selectedDate} onDateSelected={setSelectedDate} />
 
       {isDateSelected && (
-        <div className="absolute bottom-0 right-0 top-0 flex w-80 flex-col gap-3 overflow-y-scroll p-6">
-          <p className="font-medium">
-            {weekDay}, <span className="text-zinc-400">{describedDate}</span>
-          </p>
+        <div className="flex flex-col gap-3 divide-y divide-zinc-700 p-6">
+          <div className="flex items-center justify-between">
+            <p className="font-medium">
+              {weekDay}, <span className="text-zinc-400">{describedDate}</span>
+            </p>
 
-          <div className="w-full grid-cols-2 gap-2 lg:grid lg:grid-cols-1">
-            {availability?.possibleTimes.map((hour) => {
-              return (
-                <CalendarStepButton
-                  key={hour}
-                  onClick={() => handleSelectTime(hour)}
-                  disabled={!availability.availableTimes.includes(hour)}
-                >
-                  {String(hour).padStart(2, '0')}:00h
-                </CalendarStepButton>
-              )
-            })}
+            <button
+              onClick={handleCloseModal}
+              title="Close modal"
+              className="flex cursor-pointer items-center justify-center rounded-md p-2 leading-[0] transition-colors hover:bg-zinc-700"
+            >
+              <X className="h-5 w-5 text-zinc-200" />
+            </button>
+          </div>
+          <div className="absolute bottom-0 right-0 top-14 mt-4 flex w-80 flex-col gap-3 overflow-y-scroll px-6 py-2">
+            <div className="w-full grid-cols-2 gap-2 lg:grid lg:grid-cols-1">
+              {availability?.possibleTimes.map((hour) => {
+                return (
+                  <CalendarStepButton
+                    key={hour}
+                    onClick={() => handleSelectTime(hour)}
+                    disabled={!availability.availableTimes.includes(hour)}
+                  >
+                    {String(hour).padStart(2, '0')}:00h
+                  </CalendarStepButton>
+                )
+              })}
+            </div>
           </div>
         </div>
       )}
