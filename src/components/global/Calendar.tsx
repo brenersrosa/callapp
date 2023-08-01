@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import { api } from '@/lib/axios'
 
 import { getWeekDays } from '@/utils/get-week-days'
+import clsx from 'clsx'
 
 interface CalendarWeek {
   week: number
@@ -183,12 +184,21 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
             return (
               <tr key={week}>
                 {days.map(({ date, disabled }) => {
+                  const isToday =
+                    new Date().toDateString() === date.toDate().toDateString()
+
                   return (
                     <td key={date.toString()} className="box-border p-[2px]">
                       <button
                         onClick={() => onDateSelected(date.toDate())}
                         disabled={disabled}
-                        className="aspect-square w-full cursor-pointer rounded-lg bg-zinc-700 text-center transition-colors hover:bg-zinc-600 focus:shadow-md disabled:cursor-default disabled:bg-zinc-800 disabled:opacity-40 disabled:hover:bg-zinc-800"
+                        className={clsx(
+                          'aspect-square w-full cursor-pointer rounded-lg text-center transition-colors focus:shadow-md disabled:cursor-default disabled:bg-zinc-800 disabled:opacity-40 disabled:hover:bg-zinc-800',
+                          {
+                            'bg-ignite-500 hover:bg-ignite-600': isToday,
+                            'bg-zinc-700 hover:bg-zinc-600': !isToday,
+                          },
+                        )}
                       >
                         {date.get('date')}
                       </button>
