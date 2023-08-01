@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Undo } from 'lucide-react'
 import dayjs from 'dayjs'
 
 import { api } from '@/lib/axios'
@@ -35,6 +35,10 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
   })
 
   const router = useRouter()
+
+  function handleBackToToday() {
+    setCurrentDate(dayjs(new Date()))
+  }
 
   function handlePreviousMonth() {
     const previousMonthDate = currentDate.subtract(1, 'month')
@@ -147,6 +151,17 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between">
+        <div>
+          <button
+            onClick={handleBackToToday}
+            title="Back to today"
+            className="flex cursor-pointer items-center justify-center gap-1 rounded-md p-2 text-sm leading-[0] transition-colors hover:bg-zinc-700"
+          >
+            <Undo className="h-5 w-5 text-zinc-200" />
+            Hoje
+          </button>
+        </div>
+
         <p className="font-medium capitalize">
           {currentMonth} <span className="text-zinc-400">{currentYear}</span>
         </p>
@@ -155,7 +170,7 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
           <button
             onClick={handlePreviousMonth}
             title="Previous month"
-            className="flex cursor-pointer items-center justify-center rounded-sm p-1 leading-[0] transition-colors hover:bg-zinc-700"
+            className="flex cursor-pointer items-center justify-center rounded-md p-2 leading-[0] transition-colors hover:bg-zinc-700"
           >
             <ChevronLeft className="h-5 w-5 text-zinc-200" />
           </button>
@@ -163,7 +178,7 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
           <button
             onClick={handleNextMonth}
             title="Next month"
-            className="flex cursor-pointer items-center justify-center rounded-sm p-1 leading-[0] transition-colors hover:bg-zinc-700"
+            className="flex cursor-pointer items-center justify-center rounded-md p-2 leading-[0] transition-colors hover:bg-zinc-700"
           >
             <ChevronRight className="h-5 w-5 text-zinc-200" />
           </button>
