@@ -1,12 +1,10 @@
 import { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ArrowRight, X } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
-import colors from 'tailwindcss/colors'
-import { toast } from 'react-hot-toast'
 
 import { MultiStep } from '@/components/register/MultiStep'
 import { Box } from '@/components/global/Box'
@@ -14,6 +12,7 @@ import { Input } from '@/components/global/Input'
 import { Button } from '@/components/global/Button'
 
 import { api } from '@/lib/axios'
+import { useToast } from '@/contexts/ToastContext'
 
 const registerFormSchema = z.object({
   username: z
@@ -44,6 +43,8 @@ export default function Register() {
 
   const searchParams = useSearchParams()
 
+  const { showToast } = useToast()
+
   useEffect(() => {
     if (searchParams.get('username')) {
       setValue('username', String(searchParams.get('username')))
@@ -61,17 +62,9 @@ export default function Register() {
     } catch (err) {
       if (err instanceof AxiosError && err?.response?.data) {
         console.log(err.response.data)
-        toast.error('Este usuário já existe', {
-          position: 'top-right',
-          style: {
-            backgroundColor: colors.red[500],
-            color: colors.white,
-            fontSize: 16,
-            fontWeight: 500,
-            padding: 16,
-          },
-          icon: <X size={24} className="text-zinc-50" />,
-        })
+
+        showToast('Falha!', 'Este usuário já existe.', 'error')
+
         return
       }
       console.log(err)

@@ -2,10 +2,8 @@ import { useRouter } from 'next/router'
 import { z } from 'zod'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Calendar, CheckCircle, Clock } from 'lucide-react'
+import { Calendar, Clock } from 'lucide-react'
 import dayjs from 'dayjs'
-import colors from 'tailwindcss/colors'
-import { toast } from 'react-hot-toast'
 
 import { Input } from '@/components/global/Input'
 import { Box } from '@/components/global/Box'
@@ -14,6 +12,8 @@ import { Button } from '@/components/global/Button'
 
 import { api } from '@/lib/axios'
 import { PhoneNumberInput } from '@/components/global/PhoneNumberInput'
+
+import { useToast } from '@/contexts/ToastContext'
 
 const confirmStepSchema = z.object({
   name: z
@@ -35,6 +35,8 @@ export default function ConfirmStep({
   schedulingDate,
   onReturnToCalendar,
 }: ConfirmStepProps) {
+  const { showToast } = useToast()
+
   const {
     register,
     handleSubmit,
@@ -51,34 +53,32 @@ export default function ConfirmStep({
   const router = useRouter()
   const username = String(router.query.username)
 
+  const describedDate = dayjs(schedulingDate).format('DD[ de ]MMMM[ de ]YYYY')
+  const describedTime = dayjs(schedulingDate).format('HH:mm[h]')
+  const formattedDate = dayjs(schedulingDate).format(
+    'dddd, DD [de] MMMM [às] HH:mm[h]',
+  )
+
   async function handleConfirmScheduling(data: ConfirmStepData) {
     const { name, email, phone, observations } = data
 
-    await api.post(`/users/${username}/schedule`, {
-      name,
-      email,
-      phone,
-      observations,
-      date: schedulingDate,
-    })
+    await api
+      .post(`/users/${username}/schedule`, {
+        name,
+        email,
+        phone,
+        observations,
+        date: schedulingDate,
+      })
+      .then(() => {
+        showToast('Agendamendo realizado!', formattedDate, 'success')
 
-    toast.error('Agendamento realizado com sucesso!', {
-      position: 'top-right',
-      style: {
-        backgroundColor: colors.green[500],
-        color: colors.white,
-        fontSize: 16,
-        fontWeight: 500,
-        padding: 16,
-      },
-      icon: <CheckCircle size={24} className="text-zinc-50" />,
-    })
-
-    onReturnToCalendar()
+        onReturnToCalendar()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
-
-  const describedDate = dayjs(schedulingDate).format('DD[ de ]MMMM[ de ]YYYY')
-  const describedTime = dayjs(schedulingDate).format('HH:mm[h]')
 
   return (
     <Box

@@ -160,7 +160,7 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
           <button
             onClick={handleBackToToday}
             title="Back to today"
-            className="flex cursor-pointer items-center justify-center gap-1 rounded-md p-2 text-sm leading-[0] transition-colors hover:bg-zinc-700"
+            className="flex cursor-pointer items-center justify-center gap-1 rounded-md border border-ignite-500 p-2 text-sm leading-[0] transition-colors hover:bg-ignite-600"
           >
             <Undo className="h-5 w-5 text-zinc-200" />
             Hoje
@@ -215,8 +215,9 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
                         className={clsx(
                           'aspect-square w-full cursor-pointer rounded-lg text-center transition-colors focus:shadow-md disabled:cursor-default disabled:bg-zinc-800 disabled:opacity-40 disabled:hover:bg-zinc-800',
                           {
-                            'bg-ignite-500 hover:bg-ignite-600': isToday,
-                            'bg-zinc-700 hover:bg-zinc-600': !isToday,
+                            'border border-ignite-500 hover:bg-ignite-600 focus:bg-ignite-600':
+                              isToday,
+                            'hover:bg-zinc-700 focus:bg-zinc-700': !isToday,
                           },
                         )}
                       >
