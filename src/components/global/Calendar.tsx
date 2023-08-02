@@ -37,7 +37,12 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
   const router = useRouter()
 
   function handleBackToToday() {
-    setCurrentDate(dayjs(new Date()))
+    const currentMonth = dayjs().month()
+    const currentYear = dayjs().year()
+
+    setCurrentDate(
+      currentDate.set('month', currentMonth).set('year', currentYear),
+    )
   }
 
   function handlePreviousMonth() {
