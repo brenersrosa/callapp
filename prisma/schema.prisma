@@ -78,6 +78,7 @@ model Scheduling {
   date         DateTime
   name         String
   email        String
+  phone        String?
   observations String?
 
   created_at DateTime @default(now())

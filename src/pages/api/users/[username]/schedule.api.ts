@@ -29,11 +29,12 @@ export default async function handle(
   const createSchedulingBody = z.object({
     name: z.string(),
     email: z.string(),
+    phone: z.string(),
     observations: z.string(),
     date: z.string().datetime(),
   })
 
-  const { name, email, observations, date } = createSchedulingBody.parse(
+  const { name, email, phone, observations, date } = createSchedulingBody.parse(
     req.body,
   )
 
@@ -62,6 +63,7 @@ export default async function handle(
     data: {
       name,
       email,
+      phone,
       observations,
       date: schedulingDate.toDate(),
       user_id: user.id,

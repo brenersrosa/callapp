@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { z } from 'zod'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Calendar, CheckCircle, Clock } from 'lucide-react'
 import dayjs from 'dayjs'
@@ -13,12 +13,14 @@ import { TextArea } from '@/components/global/TextArea'
 import { Button } from '@/components/global/Button'
 
 import { api } from '@/lib/axios'
+import { PhoneNumberInput } from '@/components/global/PhoneNumberInput'
 
 const confirmStepSchema = z.object({
   name: z
     .string()
     .min(3, { message: 'O nome precisa ter pelo menos 3 caracteres.' }),
   email: z.string().email({ message: 'E-mail inválido' }),
+  phone: z.string(),
   observations: z.string(),
 })
 
@@ -36,21 +38,26 @@ export default function ConfirmStep({
   const {
     register,
     handleSubmit,
+    control,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<ConfirmStepData>({
     resolver: zodResolver(confirmStepSchema),
+    defaultValues: {
+      phone: '',
+    },
   })
 
   const router = useRouter()
   const username = String(router.query.username)
 
   async function handleConfirmScheduling(data: ConfirmStepData) {
-    const { name, email, observations } = data
+    const { name, email, phone, observations } = data
 
     await api.post(`/users/${username}/schedule`, {
       name,
       email,
+      phone,
       observations,
       date: schedulingDate,
     })
@@ -108,6 +115,14 @@ export default function ConfirmStep({
           {...register('email')}
           info
           error={errors.email}
+        />
+
+        <Controller
+          name="phone"
+          control={control}
+          render={({ field }) => (
+            <PhoneNumberInput label="Telefone" {...field} />
+          )}
         />
 
         <TextArea
