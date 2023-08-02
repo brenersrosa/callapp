@@ -5,6 +5,7 @@ import {
   ReactNode,
   TextareaHTMLAttributes,
   forwardRef,
+  useEffect,
   useState,
 } from 'react'
 import { FieldError } from 'react-hook-form'
@@ -16,22 +17,16 @@ interface MultilineInputProps
   icon?: ReactNode
   error?: FieldError
   limit?: number
+  totalCharacters?: number
 }
 
 const TextAreaBase: ForwardRefRenderFunction<
   HTMLTextAreaElement,
   MultilineInputProps
-> = ({ label, complement, error = null, limit = 1000, ...rest }, ref) => {
-  const [content, setContent] = useState('')
-
-  function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
-    const newContent = e.target.value
-
-    if (newContent.length <= limit) {
-      setContent(newContent)
-    }
-  }
-
+> = (
+  { label, complement, error = null, limit = 1000, totalCharacters, ...rest },
+  ref,
+) => {
   return (
     <div className="flex w-full flex-col gap-4">
       {label && (
@@ -50,13 +45,12 @@ const TextAreaBase: ForwardRefRenderFunction<
           className="h-full w-full resize-none rounded-lg border border-transparent bg-zinc-900 px-2 text-zinc-100 placeholder-zinc-500 focus:outline-none disabled:cursor-not-allowed"
           rows={4}
           maxLength={limit}
-          onChange={handleChange}
           ref={ref}
           {...rest}
         />
 
         <span className="flex flex-1 justify-end px-2 text-xs text-zinc-600">
-          {content.length}/{limit} caracteres
+          {totalCharacters}/{limit} caracteres
         </span>
       </div>
 
@@ -69,4 +63,6 @@ const TextAreaBase: ForwardRefRenderFunction<
   )
 }
 
-export const TextArea = forwardRef(TextAreaBase)
+export const TextArea = forwardRef<HTMLTextAreaElement, MultilineInputProps>(
+  TextAreaBase,
+)

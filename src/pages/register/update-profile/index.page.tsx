@@ -39,6 +39,7 @@ export default function UpdateProfile() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = useForm<UpdateProfileData>({
     resolver: zodResolver(updateProfileSchema),
@@ -138,6 +139,7 @@ export default function UpdateProfile() {
           label="Sobre você"
           {...register('bio')}
           complement="Fale um pouco sobre você. Isto será exibido em sua página pessoal."
+          totalCharacters={watch('bio') ? watch('bio').length : 0}
         />
 
         <Button

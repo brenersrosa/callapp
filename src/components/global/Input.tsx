@@ -32,7 +32,7 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
 ) => {
   return (
     <div
-      className={clsx('flex flex-col gap-2', {
+      className={clsx('relative flex flex-col gap-2', {
         'cursor-not-allowed opacity-70': disabled === true,
       })}
     >

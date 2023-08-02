@@ -36,6 +36,7 @@ export default function ConfirmStep({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<ConfirmStepData>({
     resolver: zodResolver(confirmStepSchema),
@@ -113,6 +114,10 @@ export default function ConfirmStep({
           label="Observações"
           {...register('observations')}
           error={errors.observations}
+          limit={100}
+          totalCharacters={
+            watch('observations') ? watch('observations').length : 0
+          }
         />
 
         <div className="grid grid-cols-4 gap-2">
